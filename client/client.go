@@ -1,4 +1,4 @@
-package main
+package client
 
 import (
 	"encoding/json"
@@ -10,7 +10,7 @@ import (
 )
 
 const (
-	HOST          = ""
+	HOST          = "wmq.worthcloud.net/mqtt"
 	USERNAME      = ""
 	PWD           = ""
 	KEEPALIVE     = 120 * time.Second
@@ -26,11 +26,11 @@ type Client struct {
 	observer      func(c *Client, msg *Message)
 }
 
-func (c *Client) NewClient(clientId string) *Client {
+func NewClient(clientId string) *Client {
 	clientOptions := mqtt.NewClientOptions().
 		AddBroker(HOST).
-		SetUsername(USERNAME).
-		SetPassword(PWD).
+		//SetUsername(USERNAME).
+		//SetPassword(PWD).
 		SetClientID(clientId).
 		SetCleanSession(false).
 		SetAutoReconnect(true).
@@ -79,6 +79,8 @@ func (c *Client) Publish(topic string, qos byte, retained bool, data []byte) err
 	}
 	return nil
 }
+
+//订阅消息
 func (c *Client) Subscribe(observer func(c *Client, msg *Message), qos byte, topics ...string) error {
 	if len(topics) == 0 {
 		return errors.New("the topic is empty")
@@ -97,6 +99,8 @@ func (c *Client) Subscribe(observer func(c *Client, msg *Message), qos byte, top
 	c.client.SubscribeMultiple(filters, c.messageHandler)
 	return nil
 }
+
+//消息处理
 func (c *Client) messageHandler(client mqtt.Client, msg mqtt.Message) {
 	if c.observer == nil {
 		Println("not subscribe message observer")
@@ -109,6 +113,8 @@ func (c *Client) messageHandler(client mqtt.Client, msg mqtt.Message) {
 	}
 	c.observer(c, message)
 }
+
+//解析消息
 func decodeMessage(payload []byte) (*Message, error) {
 	message := new(Message)
 	decoder := json.NewDecoder(strings.NewReader(string(payload)))
@@ -118,6 +124,8 @@ func decodeMessage(payload []byte) (*Message, error) {
 	}
 	return message, nil
 }
+
+//取消订阅
 func (c *Client) Unsubscribe(topics ...string) {
 	c.observer = nil
 	c.client.Unsubscribe(topics...)
