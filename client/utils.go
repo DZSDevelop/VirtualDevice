@@ -15,5 +15,5 @@ func getTimestampNano() int64 {
 	return time.Now().UnixNano()
 }
 func Println(a ...interface{}) {
-	fmt.Println()
+	fmt.Println(a)
 }

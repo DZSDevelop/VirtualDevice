@@ -10,7 +10,8 @@ import (
 )
 
 const (
-	HOST          = "wmq.worthcloud.net/mqtt"
+	HOST          = "wmq.worthcloud.net:1883"
+	PORT          = 1883
 	USERNAME      = ""
 	PWD           = ""
 	KEEPALIVE     = 120 * time.Second
@@ -106,6 +107,7 @@ func (c *Client) messageHandler(client mqtt.Client, msg mqtt.Message) {
 		Println("not subscribe message observer")
 		return
 	}
+	Println("message received", string(msg.Payload()))
 	message, err := decodeMessage(msg.Payload())
 	if err != nil {
 		Println("failed to decode message")
