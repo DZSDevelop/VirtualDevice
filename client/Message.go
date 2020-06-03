@@ -6,4 +6,5 @@ type Message struct {
 	DeviceId  string                 `json:"device_id"`
 	Timestamp string                 `json:"timestamp"`
 	Data      map[string]interface{} `json:"data,omitempty"`
+	Sync      string                 `json:"sync,omitempty"`
 }

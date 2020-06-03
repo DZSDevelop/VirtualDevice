@@ -18,6 +18,11 @@ const (
 	PING_TIMEOUT  = 10 * time.Second
 	WRITE_TIMEOUT = 10 * time.Second
 	WAIT_TIMEOUT  = 10 * time.Second
+
+	DeviceId  = "2000231090012385"
+	SendTopic = "data_from_client"
+	SubTopic  = "data_from_server/" + DeviceId
+	ClientId  = "DEV:" + DeviceId
 )
 
 type Client struct {
@@ -107,7 +112,7 @@ func (c *Client) messageHandler(client mqtt.Client, msg mqtt.Message) {
 		Println("not subscribe message observer")
 		return
 	}
-	Println("message received", string(msg.Payload()))
+	Println("Received MSG", string(msg.Payload()))
 	message, err := decodeMessage(msg.Payload())
 	if err != nil {
 		Println("failed to decode message")

@@ -5,31 +5,32 @@ import (
 	"sync"
 )
 
-const (
-	DeviceId  = "2000146200013882"
-	SendTopic = "data_from_client"
-	SubTopic  = "data_from_server/" + DeviceId
-	ClientId  = "DEV:" + DeviceId
-)
-
 func main() {
-	var wg = sync.WaitGroup{}
-	var c = NewClient(ClientId)
-	err := c.Connect()
+	c, err := connectServer()
 	if err != nil {
 		Println("链接失败", err)
 		return
 	}
+	var wg = sync.WaitGroup{}
 	wg.Add(1)
 	_ = c.Subscribe(func(client *Client, msg *Message) {
 		Println(msg.Data)
+
 	}, 0, SubTopic)
-
-	js := "{\"msg_id\":\"\",\"command\":\"300002\",\"device_id\":\"2000146200013882\",\"timestamp\":\"1551148989\",\"data\":{\"cloud_type\":\"1\"}}"
-	err = c.Publish(SendTopic, 0, false, []byte(js))
-	if err != nil {
-		Println(err)
-	}
 	wg.Wait()
+}
 
+//连接Server
+func connectServer() (*Client, error) {
+	c := NewClient(ClientId)
+	err := c.Connect()
+	return c, err
+}
+
+//发送消息
+func sendMsg(c *Client, json string) {
+	err := c.Publish(SendTopic, 0, false, []byte(json))
+	if err != nil {
+		Println("Send MSG Error:", err)
+	}
 }
