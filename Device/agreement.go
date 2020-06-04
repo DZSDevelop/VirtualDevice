@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 )
 
+//创建公共MAP
 func CreateBaseMap(msgId string, command string) map[string]interface{} {
 	base := make(map[string]interface{})
 	if "" != msgId {
@@ -15,15 +16,27 @@ func CreateBaseMap(msgId string, command string) map[string]interface{} {
 	return base
 }
 
+//心跳发送
 func HeartBeat() ([]byte, error) {
 	dataMap := CreateBaseMap("", "30000")
 	return json.Marshal(dataMap)
 }
+
+//登录
 func Login(cloudType string) ([]byte, error) {
 	dataMap := CreateBaseMap("", "30002")
-	dataMap["cloud_type"] = cloudType
+	data := make(map[string]interface{})
+	data["cloud_type"] = cloudType
+	dataMap["data"] = data
 	return json.Marshal(dataMap)
 }
-func BindUser() {
 
+//声波绑定用户
+func SWBindUser(userId string, appId string) ([]byte, error) {
+	dataMap := CreateBaseMap("", "30002")
+	data := make(map[string]interface{})
+	data["user_id"] = userId
+	data["appid"] = appId
+	dataMap["data"] = data
+	return json.Marshal(dataMap)
 }

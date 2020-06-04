@@ -2,7 +2,8 @@ package main
 
 import (
 	. "VirtualDevice/client"
-	"sync"
+	"bufio"
+	"os"
 )
 
 func main() {
@@ -11,13 +12,18 @@ func main() {
 		Println("链接失败", err)
 		return
 	}
-	var wg = sync.WaitGroup{}
-	wg.Add(1)
-	_ = c.Subscribe(func(client *Client, msg *Message) {
-		Println(msg.Data)
+	_ = c.Subscribe(handMsg, 0, SubTopic)
+	scanner := bufio.NewScanner(os.Stdin)
+	for scanner.Scan() {
+		switch scanner.Text() {
+		case "0": //为0时结束程序
+			return
+		case "1":
+		case "2":
+			break
+		}
+	}
 
-	}, 0, SubTopic)
-	wg.Wait()
 }
 
 //连接Server
@@ -33,4 +39,19 @@ func sendMsg(c *Client, json string) {
 	if err != nil {
 		Println("Send MSG Error:", err)
 	}
+}
+
+//处理消息
+func handMsg(client *Client, msg *Message) {
+	switch msg.Command {
+	//登录返回
+	case "300002":
+		handLogin(msg)
+		break
+	case "300013":
+		break
+	}
+}
+func handLogin(msg *Message) {
+
 }
