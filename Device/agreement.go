@@ -12,6 +12,7 @@ func CreateBaseMap(msgId string, command string) map[string]interface{} {
 		base["msg_id"] = msgId
 	}
 	base["device_id"] = DeviceId
+	base["command"] = command
 	base["timestamp"] = GetTimestampMilli()
 	return base
 }
@@ -37,6 +38,15 @@ func SWBindUser(userId string, appId string) ([]byte, error) {
 	data := make(map[string]interface{})
 	data["user_id"] = userId
 	data["appid"] = appId
+	dataMap["data"] = data
+	return json.Marshal(dataMap)
+}
+
+//获取天气
+func GetWeather(city string) ([]byte, error) {
+	dataMap := CreateBaseMap("", "300022")
+	data := make(map[string]interface{})
+	data["city"] = city
 	dataMap["data"] = data
 	return json.Marshal(dataMap)
 }

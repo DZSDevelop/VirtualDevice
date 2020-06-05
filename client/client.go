@@ -10,10 +10,10 @@ import (
 )
 
 const (
-	HOST          = "wmq.worthcloud.net:1883"
-	PORT          = 1883
-	USERNAME      = ""
-	PWD           = ""
+	HOST = "wmq.worthcloud.net:1883"
+	//HOST          = "192.168.1.79:1883"
+	USERNAME      = "admin"
+	PWD           = "public"
 	KEEPALIVE     = 120 * time.Second
 	PING_TIMEOUT  = 10 * time.Second
 	WRITE_TIMEOUT = 10 * time.Second
@@ -48,7 +48,7 @@ func NewClient(clientId string) *Client {
 		}).
 		SetConnectionLostHandler(func(client mqtt.Client, err error) {
 			Println("MQTT is disconnected,ClientId is", clientId)
-			Println("Error is", err)
+			panic(err)
 		})
 	client := mqtt.NewClient(clientOptions)
 	return &Client{
@@ -87,7 +87,7 @@ func (c *Client) Publish(topic string, qos byte, retained bool, data []byte) err
 }
 
 //订阅消息
-func (c *Client) Subscribe(observer func(c *Client, msg *Message), qos byte, topics ...string) error {
+func (c *Client) Subscribe(observer func(*Client, *Message), qos byte, topics ...string) error {
 	if len(topics) == 0 {
 		return errors.New("the topic is empty")
 	}
@@ -112,7 +112,7 @@ func (c *Client) messageHandler(client mqtt.Client, msg mqtt.Message) {
 		Println("not subscribe message observer")
 		return
 	}
-	Println("Received MSG", string(msg.Payload()))
+	Println("Received MSG-------------", string(msg.Payload()))
 	message, err := decodeMessage(msg.Payload())
 	if err != nil {
 		Println("failed to decode message")
