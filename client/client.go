@@ -10,19 +10,19 @@ import (
 )
 
 const (
-	HOST = "wmq.worthcloud.net:1883"
-	//HOST          = "192.168.1.79:1883"
+	HOST          = "wmq.worthcloud.net:1883"
 	USERNAME      = "admin"
 	PWD           = "public"
-	KEEPALIVE     = 120 * time.Second
+	KEEPALIVE     = 180 * time.Second
 	PING_TIMEOUT  = 10 * time.Second
 	WRITE_TIMEOUT = 10 * time.Second
 	WAIT_TIMEOUT  = 10 * time.Second
 
 	DeviceId  = "2000231090012385"
+	AuthKey   = "LBSDLJFLSDJFSDFHSODUFNSLDJFLJSDJFLSJDF"
 	SendTopic = "data_from_client"
 	SubTopic  = "data_from_server/" + DeviceId
-	ClientId  = "DEV:" + DeviceId
+	ClientId  = "DEV_" + DeviceId
 )
 
 type Client struct {
@@ -112,7 +112,7 @@ func (c *Client) messageHandler(client mqtt.Client, msg mqtt.Message) {
 		Println("not subscribe message observer")
 		return
 	}
-	Println("Received MSG-------------", string(msg.Payload()))
+	Println("Received MSG:", string(msg.Payload()))
 	message, err := decodeMessage(msg.Payload())
 	if err != nil {
 		Println("failed to decode message")
