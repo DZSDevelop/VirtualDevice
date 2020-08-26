@@ -11,8 +11,8 @@ import (
 
 const (
 	HOST          = "wmq.worthcloud.net:1883"
-	USERNAME      = "admin"
-	PWD           = "public"
+	USERNAME      = "WORTHCLOUD"
+	PWD           = "WORTHCLOUD2202"
 	KEEPALIVE     = 180 * time.Second
 	PING_TIMEOUT  = 10 * time.Second
 	WRITE_TIMEOUT = 10 * time.Second
@@ -35,8 +35,8 @@ type Client struct {
 func NewClient(clientId string) *Client {
 	clientOptions := mqtt.NewClientOptions().
 		AddBroker(HOST).
-		//SetUsername(USERNAME).
-		//SetPassword(PWD).
+		SetUsername(USERNAME).
+		SetPassword(PWD).
 		SetClientID(clientId).
 		SetCleanSession(false).
 		SetAutoReconnect(true).
